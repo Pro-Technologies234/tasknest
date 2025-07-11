@@ -24,6 +24,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 import os
 from django.http import HttpResponse
+from authentication.views import run_db_commands
+
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
 #     TokenRefreshView,
@@ -47,6 +49,8 @@ urlpatterns = [
     # Swagger and Redoc
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('run-db/', run_db_commands),
+
     # #  JWT Auth Token endpoints (SimpleJWT)
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

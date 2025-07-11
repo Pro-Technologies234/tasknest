@@ -7,6 +7,10 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework_simplejwt.views import TokenRefreshView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+# authentication/views.py
+from django.core.management import call_command
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
 import logging
 logger = logging.getLogger('django')
 
@@ -151,3 +155,11 @@ def get_user_profile(request):
             {"detail": f"An error occurred: {str(e)}"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        
+        
+        
+@staff_member_required  # Optional: protect this route (requires login as admin)
+def run_db_commands(request):
+    call_command('makemigrations')   # Optional, you may skip this
+    call_command('migrate')
+    return HttpResponse("Migrations ran successfully.")
