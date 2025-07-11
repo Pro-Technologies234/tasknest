@@ -22,6 +22,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf.urls.static import static
 from django.conf import settings
+import os
+from django.http import HttpResponse
 # from rest_framework_simplejwt.views import (
 #     TokenObtainPairView,
 #     TokenRefreshView,
@@ -49,7 +51,14 @@ urlpatterns = [
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+def view_log(request):
+    path = os.path.join(settings.BASE_DIR, 'debug.log')
+    with open(path, 'r') as f:
+        return HttpResponse(f.read(), content_type='text/plain')
 
+urlpatterns += [
+    path('debug-log/', view_log),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
