@@ -7,6 +7,8 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework_simplejwt.views import TokenRefreshView
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+import logging
+logger = logging.getLogger('django')
 
 from .serializers import (
     UserRegistrationSerializer,
@@ -23,22 +25,24 @@ CustomUser = get_user_model()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
-    """
-    Registers a new user and returns JWT tokens.
-    """
     serializer = UserRegistrationSerializer(data=request.data)
     if serializer.is_valid():
-        user = serializer.save()
-        refresh = RefreshToken.for_user(user)
+        try:
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'details': f'User {user.email} was Registered Successfully',
+                'user': CustomUserSerializer(user).data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.exception("Registration failed with exception")
+            return Response({'detail': 'Server error occurred.'}, status=500)
 
-        return Response({
-            'details': f'User {user.email} was Registered Successfully',
-            'user': CustomUserSerializer(user).data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_201_CREATED)
-
+    logger.debug(f"Registration errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 login_schema = openapi.Schema(
