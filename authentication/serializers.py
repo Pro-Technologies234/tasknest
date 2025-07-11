@@ -33,9 +33,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    # New fields added for registration
     password = serializers.CharField(write_only=True)
-   
+
     class Meta:
         model = CustomUser
         fields = [
@@ -48,15 +47,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            gender=validated_data['gender'],
-        )
-
-        # Remove or comment out the email verification setup
-        # setup_user_email(self.context['request'], user, [])
-
-        # Save the user without triggering email verification
+        password = validated_data.pop('password')
+        user = CustomUser(**validated_data)
+        user.set_password(password)
         user.save()
         return user
