@@ -158,7 +158,6 @@ def get_user_profile(request):
         
         
         
-@staff_member_required  # Optional: protect this route (requires login as admin)
 def run_db_commands(request):
     call_command('makemigrations')   # Optional, you may skip this
     call_command('migrate')
