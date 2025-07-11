@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: django-app
+    name: tasknest-web
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
@@ -8,5 +8,19 @@ services:
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: tasknest.settings
-      - key: PYTHON_VERSION
-        value: 3.10
+      - key: SECRET_KEY
+        value: django-insecure-#=_t656=r*tgy8jh^#bgs94(2k)yyi&m0ln-d&ps%ehq-70b4k
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: tasknest-web.onrender.com
+      - fromDatabase:
+          name: tasknest-db
+          property: connectionString
+          key: DATABASE_URL
+
+databases:
+  - name: tasknest-db
+    plan: free
+    databaseName: tasknest
+    user: tasknest_user

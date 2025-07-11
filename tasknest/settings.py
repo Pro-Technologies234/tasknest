@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#=_t656=r*tgy8jh^#bgs94(2k)yyi&m0ln-d&ps%ehq-70b4k'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -92,14 +93,10 @@ WSGI_APPLICATION = 'tasknest.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tasknest',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-    }
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 
