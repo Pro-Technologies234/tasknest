@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn tasknest.wsgi"
+    startCommand: "gunicorn tasknest.wsgi:application"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: tasknest.settings
