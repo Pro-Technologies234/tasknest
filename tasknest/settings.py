@@ -14,20 +14,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Locally, this will be True. On Render, set PYTHON_ENV to 'production' to switch.
 IS_DEVELOPMENT = os.getenv('PYTHON_ENV') != 'production'
 
+# --- ENVIRONMENT SEPARATION ---
+IS_DEVELOPMENT = os.getenv('PYTHON_ENV') != 'production' and 'RENDER' not in os.environ
+
 DEBUG = IS_DEVELOPMENT
 
 if not IS_DEVELOPMENT:
     # PRODUCTION (Render)
     ALLOWED_HOSTS = ['tasknest-uy43.onrender.com']
+    # Add this to fix CSRF issues on Render
+    CSRF_TRUSTED_ORIGINS = ['https://tasknest-uy43.onrender.com']
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 else:
     # DEVELOPMENT (Local)
     ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-#=_t656=r*tgy8jh^#bgs94(2k)yyi&m0ln-d&ps%ehq-70b4k')
@@ -123,11 +130,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS & Auth Backends
-CORS_ALLOW_ALL_ORIGINS = True 
+# CORS_ALLOW_ALL_ORIGINS = True 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
+
+# Add your production frontend URL
+if not IS_DEVELOPMENT:
+    # Replace with your actual Vercel/Netlify URL
+    CORS_ALLOWED_ORIGINS.append("https://your-frontend-domain.vercel.app") 
+
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
